@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,7 +65,7 @@ fun ImageButton(onClick: () -> Unit,
                 shape = RoundedCornerShape(20.dp)
             )
             .size(width = largeur.dp, height = hauteur.dp)
-            .clickable {onClick()}
+            .clickable { onClick() }
         ,
     ) {
         Image(
@@ -75,88 +76,123 @@ fun ImageButton(onClick: () -> Unit,
     }
 
 }
-
+//////////////////////////////////////////////
+//          Conteneur principale
+/////////////////////////////////////////////
 @Composable
 fun ScreenContent(name: String) {
 
     Column(    // Colonne qui contient toute l'application
         modifier = Modifier
             .fillMaxWidth()
-            //.fillMaxHeight()
-            .systemBarsPadding() // Ajoute un espacement pour les barres du système
+            .fillMaxHeight()
+            .systemBarsPadding()    // Ajoute un espacement pour les barres du système
         ,
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Row(     // Ligne d'entête
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 0.dp, vertical = 1.dp)
-                .background(Color(0xFF1E90FE))
-                .padding(start = 3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Image(
-                modifier = Modifier.padding(3.dp),
-                painter = painterResource(id = R.drawable.langues_64px),
-                contentDescription = null,
-                contentScale = ContentScale.Inside,
-            )
-
-            Text(text = "MAEL Scan",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            Row(    // Ligne pour unir la version et le petit code QR
+        Column (){
+            Row(     // Ligne d'entête avec le titre
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 0.dp, vertical = 1.dp)
+                    .background(Color(0xFF1E90FE))
+                    .padding(start = 3.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                ){
-                Text(
-                    text = "V$name",
-                    color = Color.White,
-                    style = MaterialTheme.typography.labelSmall
-                )
-
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Image(
                     modifier = Modifier.padding(3.dp),
-                    painter = painterResource(id = R.drawable.qrcode_64px),
+                    painter = painterResource(id = R.drawable.langues_64px),
                     contentDescription = null,
                     contentScale = ContentScale.Inside,
                 )
+
+                Text(
+                    text = "MAEL Scan",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Row(
+                    // Ligne pour unir la version et le petit code QR
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "V$name",
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+
+                    Image(
+                        modifier = Modifier.padding(3.dp),
+                        painter = painterResource(id = R.drawable.qrcode_64px),
+                        contentDescription = null,
+                        contentScale = ContentScale.Inside,
+                    )
+                }
             }
+
+            Text(     // Zone où s'affichera le contenu du code QR
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 3.dp)
+                    .background(color = Color(0xFFE6E6E6))
+                    .padding(7.dp)
+                // .scrollable()   // Comment faire pour permettre de faire défiler le texte s'il dépasse ?
+                ,
+                text = "Écouter l'audio. ",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                // fontFamily = FontFamily.Cursive,
+                maxLines = 5,
+                minLines = 1,
+                overflow = TextOverflow.Ellipsis,   //  Ajoute 3... si ça déborde
+                textAlign = TextAlign.Left
+            )
+
         }
 
-        Text(     // Zone où s'affichera le contenu du code QR
+
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 3.dp)
-                .background(color = Color(0xFFE6E6E6))
-                .padding(7.dp)
-                // .scrollable()   // Comment faire pour permettre de faire défiler le texte s'il dépasse ?
-            ,
-            text = "Texte trouvé dans le code QR. S'il est long, comment ça réagit ? Texte trouvé dans le code QR. S'il est long, comment ça réagit ? Texte trouvé dans le code QR. S'il est long, comment ça réagit ? ",
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
-            // fontFamily = FontFamily.Cursive,
-            maxLines = 6,
-            minLines = 1,
-            overflow = TextOverflow.Ellipsis,   //  Ajoute 3... si ça déborde
-            textAlign = TextAlign.Left
-        )
+                .padding(start = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+           )
+        {
 
-        Row{
-            Text(text = "Play / Pause")
-            Text(text = "Stop")
+            ImageButton(onClick = { Log.d("onClick", "Lire le mp3") },
+                hauteur = 67,
+                largeur = 67,
+                image = R.drawable.play
+            )
+
+            ImageButton(onClick = { Log.d("onClick", "Arrêter le mp3") },
+                hauteur = 67,
+                largeur = 67,
+                image = R.drawable.stop
+            )
+
         }
 
-        Column{
-            Text(text = "Escanear el codigo QR")
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)    // Espace au dessus du texte
+            ,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(text = "Escanear el codigo QR",
+            )
 
-        ImageButton(onClick = { Log.d("onClick", "Scanner appelé") },
+        ImageButton(onClick = { Log.d("onClick", "Appeler le Scanner") },
                     hauteur = 130,
                     largeur = 130,
                     image = R.drawable.logo_mael_130px
@@ -164,7 +200,14 @@ fun ScreenContent(name: String) {
 
         }
 
-        Column{
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)    // Espace au dessus du texte
+            ,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
             Text(text = "Volver a escuchar")
 
             ImageButton(onClick = { Log.d("onClick", "Lire à nouveau") },
@@ -175,23 +218,51 @@ fun ScreenContent(name: String) {
 
         }
 
-        Column{
-            Text(text = "EScuchar mas despacio")
-            ImageButton(onClick = { Log.d("onClick", "Lire à nouveau") },
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)    // Espace au dessus du texte
+            ,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+
+            Text(text = "Escuchar mas despacio")
+
+            ImageButton(
+                onClick = { Log.d("onClick", "Lire plus lentement") },
                 hauteur = 80,
                 largeur = 174,
                 image = R.drawable.bouton_lent_80px
             )
+
         }
 
-        Column{
-            Text(text = "...")
-            Text(text = "...")
-        }
+        Text(text = " ",
+            modifier = Modifier.padding(25.dp)
+            )
 
-        Row{
-            Text(text = "Logo école")
-            Text(text = "Auteur - licence")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp)
+            ,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+
+        ){
+            Image(
+                modifier = Modifier
+                    .padding(3.dp)
+                    .size(32.dp),
+                painter = painterResource(id = R.drawable.logo_lvh_150px),
+                contentDescription = null,
+                contentScale = ContentScale.Inside,
+            )
+
+            Text(text = "Auteur : Yonnel Bécognée - Licence GNU GPL V2",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

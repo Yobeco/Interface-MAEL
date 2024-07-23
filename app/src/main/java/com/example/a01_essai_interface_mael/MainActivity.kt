@@ -21,12 +21,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -107,7 +111,7 @@ fun ScreenContent(name: String) {
     ) {
 
         // Variable "Mutable state" contenant le texte
-        var text_qr by remember { mutableStateOf("Écouter l'audio.".repeat(n=15)) }
+        var text_qr by remember { mutableStateOf("Écouter l'audio. ".repeat(n=25)) }
 
         Column (){
             Row(     // Ligne d'entête avec le titre + contenu du code QR
@@ -152,24 +156,37 @@ fun ScreenContent(name: String) {
                 }
             }
 
-            Text(     // Zone où s'affichera le contenu du code QR
+            val scrollState = rememberScrollState()
+            // Pour que la taille de la Box() de text_qr s'adapte au nombre de lignes jusqu'à 5
+            // Au dela, il est possible de faire défiler le texte
+            val maxLines = 5
+            val lineHeight = 32.dp     // à régler en fonction de la taille de la police
+            val maxHeight = lineHeight * maxLines
+
+            Box(      // Mise du texte dans une Box() pour pouvoir le faire défiler quand il dépasse 5 lignes
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 3.dp, vertical = 1.dp)
-                    .background(color = Color(0xFFE6E6E6))
-                    .padding(7.dp)
-                // .scrollable()   // Comment faire pour permettre de faire défiler le texte s'il dépasse ?
-                ,
-                text = text_qr,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge,
-                // fontFamily = FontFamily.Cursive,
-                maxLines = 5,
-                minLines = 1,
-                overflow = TextOverflow.Ellipsis,   //  Ajoute 3 points ... si ça déborde
-                textAlign = TextAlign.Left
-            )
+                    .heightIn(max = maxHeight)      // Variable fixée par la tailel de chaque ligne * nb lignes
+                    .verticalScroll(scrollState)
+            ){
+                Text(     // Zone où s'affichera le contenu du code QR
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 3.dp, vertical = 1.dp)
+                        .background(color = Color(0xFFE6E6E6))
+                        .padding(7.dp),
+                    text = text_qr,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
+                    // fontFamily = FontFamily.Cursive,
+                    // maxLines = 5,
+                    minLines = 1,
+                    // overflow = TextOverflow.Ellipsis,   //  Ajoute 3 points ... si ça déborde
+                    textAlign = TextAlign.Left
+                )
+            }
+
 
         }
 

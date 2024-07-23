@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -104,6 +106,9 @@ fun ScreenContent(name: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        // Variable "Mutable state" contenant le texte
+        var text_qr by remember { mutableStateOf("Écouter l'audio.".repeat(n=15)) }
+
         Column (){
             Row(     // Ligne d'entête avec le titre + contenu du code QR
                 modifier = Modifier
@@ -155,14 +160,14 @@ fun ScreenContent(name: String) {
                     .padding(7.dp)
                 // .scrollable()   // Comment faire pour permettre de faire défiler le texte s'il dépasse ?
                 ,
-                text = "Écouter l'audio. ",
+                text = text_qr,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
                 // fontFamily = FontFamily.Cursive,
                 maxLines = 5,
                 minLines = 1,
-                overflow = TextOverflow.Ellipsis,   //  Ajoute 3... si ça déborde
+                overflow = TextOverflow.Ellipsis,   //  Ajoute 3 points ... si ça déborde
                 textAlign = TextAlign.Left
             )
 
@@ -175,18 +180,15 @@ fun ScreenContent(name: String) {
 
         // Composant pour animer la visibilité
         AnimatedVisibility(
-            visible = visible, // Détermine si le contenu est visible
-            enter = slideInVertically {
-                // Définit l'animation d'entrée par glissement vertical
-                with(density) { -40.dp.roundToPx() } // Glisse depuis 40 dp au-dessus du haut de l'écran
+            visible = visible,                          // Paramètre qui détermine si le contenu est visible
+            enter = slideInVertically {                 // Définit l'animation d'entrée par glissement vertical
+                with(density) { -40.dp.roundToPx() }    // Glisse depuis 40 dp au-dessus du haut de l'écran
             } + expandVertically(
-                // Animation d'expansion verticale à partir du haut
-                expandFrom = Alignment.Top
-            ) + fadeIn(
-                // Animation de fondu entrant avec une alpha initiale de 0.3
+                expandFrom = Alignment.Top              // Animation d'expansion verticale à partir du haut
+            ) + fadeIn(                                 // Animation de fondu entrant avec une alpha initiale de 0.3
                 initialAlpha = 0.3f
             ),
-            exit = slideOutVertically() + shrinkVertically() + fadeOut() // Animations de sortie combinées
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()     // Animations de sortie combinée
         ){
             Row(      // Ligne des bouttons lecture / Pause et Stop
                 modifier = Modifier
@@ -242,7 +244,8 @@ fun ScreenContent(name: String) {
         ){
             Text(text = "Volver a escuchar")
 
-            ImageButton(onClick = { Log.d("onClick", "Lire à nouveau") },
+            ImageButton(
+                onClick = { text_qr = "Écouter à nouveau." },
                 hauteur = 80,
                 largeur = 174,
                 image = R.drawable.bouton_repete_80px
@@ -262,7 +265,7 @@ fun ScreenContent(name: String) {
             Text(text = "Escuchar mas despacio")
 
             ImageButton(
-                onClick = { Log.d("onClick", "Lire plus lentement") },
+                onClick = { text_qr = "Écouter plus lentement." },
                 hauteur = 80,
                 largeur = 174,
                 image = R.drawable.bouton_lent_80px
@@ -270,9 +273,7 @@ fun ScreenContent(name: String) {
 
         }
 
-        Text(text = " ",      // Espaceur
-            modifier = Modifier.padding(25.dp)
-            )
+        Spacer(modifier = Modifier.height(50.dp))
 
         Row(      // Pied de page
             modifier = Modifier
